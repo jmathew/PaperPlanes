@@ -323,7 +323,7 @@ zipalign -v -f 4 bin/paperplanes.signed.apk bin/paperplanes.apk
 adb -d install bin/paperplanes.apk
 
 # Reinstall
-adb -d install bin/paperplanes.apk
+adb -d install -r bin/paperplanes.apk
 ```
 
 
