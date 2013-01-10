@@ -261,7 +261,7 @@ This is the easy bit. We are running the compile command from the `ROOT` directo
 javac -verbose -classpath "desktop/libs/*:main/libs/*:desktop/bin/classes" -sourcepath desktop/src/com/jeff/paperplanes:main/src/com/jeff/paperplanes -d desktop/bin/classes desktop/src/com/jeff/paperplanes/*.java main/src/com/jeff/paperplanes/*.java 
 
 # Run
-java -classpath "desktop/libs/*:main/libs/*:desktop/bin/classes" com.jeff.paperplanes.PaperPlanesGame
+java -classpath "desktop/libs/*:main/libs/*:desktop/bin/classes" com.jeff.paperplanes.PaperPlanesDesktop
 ```
 
 
