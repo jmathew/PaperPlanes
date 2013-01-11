@@ -108,9 +108,12 @@ public class MainScreen implements Screen {
 
     // move our plane and center it
     //spb.draw( planeImage, planeRect.x - ( planeImage.getWidth() / 2 ) , planeRect.y - ( planeImage.getHeight() / 2 ) );
-    //spb.draw( planeImage, planeRect.x, planeRect.y );
     spb.draw( planeImage, t.x * 50, t.y * 50 );
     spb.end();
+
+
+
+
 
 
     // update touch position
@@ -128,7 +131,9 @@ public class MainScreen implements Screen {
 
     //Gdx.app.log( "X + Y", planeRect.x + " + " + planeRect.y );
 
-    theWorld.step( 1/60f, 6, 2 );
+
+    // update step
+    theWorld.step( delta, 6, 2 );
 
   }
 
