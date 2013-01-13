@@ -36,18 +36,14 @@ public class MainScreen implements Screen {
   OrthographicCamera cam;
 
   World theWorld;
-  BodyDef planeBodyDef;
-  Body planeBody;
-  FixtureDef planeFixDef;
-  Fixture planeFix;
- 
-  PolygonShape planeShape; 
+
+  Plane plane;
 
   public MainScreen( PaperPlanesGame g ) {
     this.g = g;
 
     // load assets
-    planeImage = new Texture( Gdx.files.internal( "assets/plane.png" ) );
+    planeImage = new Texture( Gdx.files.internal( "assets/ball.png" ) );
 
     // initialize rectangle
     planeRect = new Rectangle();
@@ -64,26 +60,9 @@ public class MainScreen implements Screen {
     touchPos = new Vector3();
 
     // box2d 
-    theWorld = new World( new Vector2( 1f, 1f ), true );
-
-    planeBodyDef = new BodyDef();
-    planeBodyDef.type = BodyType.DynamicBody;
-    planeBodyDef.position.set( new Vector2( 0f, 0f ) );
-
-    planeBody = theWorld.createBody( planeBodyDef );
-
-    planeShape = new PolygonShape();
-    planeShape.setAsBox( planeImage.getWidth()/2, planeImage.getHeight()/2 ); //this might be in meters
+    theWorld = new World( new Vector2( 0f, 0f ), true );
     
-    planeFixDef = new FixtureDef();
-    planeFixDef.shape = planeShape;
-    planeFixDef.density = 1.0f;
-    planeFixDef.friction = 0.0f;
-    planeFixDef.restitution = 1;
-  
-    planeBody.createFixture( planeFixDef );
-
-    planeShape.dispose();
+    plane = new Plane( theWorld, new Vector2( 0f, 0f ), new Vector2( Gdx.graphics.getWidth() / ( 2 * Plane.PIXELS_PER_METER ) , Gdx.graphics.getHeight() / ( 2 * Plane.PIXELS_PER_METER ) ) );
 
   }
   @Override
@@ -97,10 +76,10 @@ public class MainScreen implements Screen {
     // update camera
     cam.update();
 
-    // get info from our physics body
-    Vector2 t = new Vector2();
-    t = planeBody.getPosition();
-    Gdx.app.log( "X + Y", t.x + " + " + t.y );
+    // update physics world
+    plane.update( delta );
+
+    Vector2 t = new Vector2( this.plane.getPosition() );
 
     // begin draw
     spb.setProjectionMatrix( cam.combined );
@@ -108,12 +87,8 @@ public class MainScreen implements Screen {
 
     // move our plane and center it
     //spb.draw( planeImage, planeRect.x - ( planeImage.getWidth() / 2 ) , planeRect.y - ( planeImage.getHeight() / 2 ) );
-    spb.draw( planeImage, t.x * 50, t.y * 50 );
+    spb.draw( planeImage, t.x * Plane.PIXELS_PER_METER, t.y * Plane.PIXELS_PER_METER );
     spb.end();
-
-
-
-
 
 
     // update touch position
@@ -126,11 +101,10 @@ public class MainScreen implements Screen {
       // converts the coord system of the touch units ( origin top left ) to camera coord ( origin bottom left )
       planeRect.x = touchPos.x;
       planeRect.y = touchPos.y;
+
+     
+      plane.setTransform( new Vector2( planeRect.x / Plane.PIXELS_PER_METER, planeRect.y / Plane.PIXELS_PER_METER ) );
     }
-
-
-    //Gdx.app.log( "X + Y", planeRect.x + " + " + planeRect.y );
-
 
     // update step
     theWorld.step( delta, 6, 2 );
