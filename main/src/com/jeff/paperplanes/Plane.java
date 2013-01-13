@@ -2,7 +2,6 @@ package com.jeff.paperplanes;
 
 import com.badlogic.gdx.Gdx;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import com.badlogic.gdx.physics.box2d.Body;
@@ -18,10 +17,9 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
-
+//we can change center point to move the focus of gravity
 public class Plane {
 
-  Texture tex;
   Body body;
   BodyDef bodyDef;
   Fixture fix;
@@ -30,26 +28,28 @@ public class Plane {
 
   Vector2 center;
 
-  public static final float GRAVITY = 9.8f; //m/s*s
+  public static final float GRAVITY = 19.8f; //m/s*s
 
   public static final float PIXELS_PER_METER = 15.0f;
 
-  public Plane( World world, Vector2 position, Vector2 center ) {
-    this.center = new Vector2( center );
-
-    // Add texture
-    tex = new Texture( Gdx.files.internal( "assets/plane.png" ) ); 
+  public Plane( World world, float width, float height, Vector2 position, Vector2 center ) {
+    this.setCenter( center );
 
     // BodyDef
     this.bodyDef = new BodyDef();
     this.bodyDef.type = BodyType.DynamicBody;
-    this.bodyDef.position.set( position );
+
+    // Convert position to meters
+    Vector2 posMeters = new Vector2( position.x / PIXELS_PER_METER, position.y / PIXELS_PER_METER );
+    Gdx.app.log( "Position", position.toString() );
+    Gdx.app.log( "PositionMeters", posMeters.toString() );
+    this.bodyDef.position.set( posMeters );
 
     this.body = world.createBody( this.bodyDef );
 
     // Shape for collision detection / physics modeling
     this.collisionBox = new PolygonShape();
-    this.collisionBox.setAsBox( tex.getWidth() / ( 2 * PIXELS_PER_METER ), tex.getHeight() / ( 2 * PIXELS_PER_METER ) ); //should be related to texture dimensions
+    this.collisionBox.setAsBox( width / ( 2 * PIXELS_PER_METER ), height / ( 2 * PIXELS_PER_METER ) ); //should be related to texture dimensions
     
     this.fixDef = new FixtureDef();
     this.fixDef.shape = this.collisionBox;
@@ -80,11 +80,11 @@ public class Plane {
 
     this.body.applyForceToCenter( fX, fY );
 
-    Gdx.app.log( "Angle", angle + "" );
+    /*Gdx.app.log( "Angle", angle + "" );
     Gdx.app.log( "Location", bodyLoc.x + " " + bodyLoc.y );
     Gdx.app.log( "Distance", (bodyLoc.x-center.x) + " " + (bodyLoc.y - center.y) );
     Gdx.app.log( "Force", fX + " " + fY );
-    Gdx.app.log( "SPACE", "" );
+    Gdx.app.log( "SPACE", "" );*/
   }
 
   public Vector2 getPosition() {
@@ -93,5 +93,10 @@ public class Plane {
 
   public void setTransform( Vector2 position ) {
     this.body.setTransform( position, this.body.getAngle() );
+  }
+
+  public void setCenter( Vector2 center ) {
+    //convert to meters
+    this.center = new Vector2( center.x / ( 2 * PIXELS_PER_METER ), center.y / ( 2 * PIXELS_PER_METER ) );
   }
 } 
