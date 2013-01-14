@@ -1,6 +1,5 @@
 package com.jeff.paperplanes;
 
-
 import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -67,6 +66,7 @@ public class MainScreen implements Screen {
     // box2d 
     dbr = new Box2DDebugRenderer();
     theWorld = new World( new Vector2( 0f, 0f ), true );
+    theWorld.setContactListener( new CustomContactListener() );
 
     planes = new ArrayList<Plane>();
 
